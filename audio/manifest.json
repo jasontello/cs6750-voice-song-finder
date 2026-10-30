@@ -1,0 +1,30 @@
+{
+  "voice": "Jessica Anne Bogart - Chatty and Friendly",
+  "model": "Eleven Multilingual v2",
+  "generated": "2026-10-28",
+  "files": {
+    "when": "53_27",
+    "candidate-0": "54_29",
+    "candidate-1": "54_46",
+    "candidate-2": "55_11",
+    "playing-0": "55_14",
+    "playing-1": "55_17",
+    "playing-2": "55_29",
+    "none": "55_31",
+    "paused": "55_33",
+    "stopped": "55_36",
+    "empty": "55_38",
+    "idle": "55_53",
+    "preview-0": "55_56",
+    "preview-1": "55_58",
+    "preview-2": "56_01"
+  },
+  "userVoice": "Mark - Natural Conversations",
+  "userClips": [
+    "user-start",
+    "user-today",
+    "user-preview",
+    "user-next",
+    "user-select"
+  ]
+}
