@@ -26,5 +26,38 @@
     "user-preview",
     "user-next",
     "user-select"
-  ]
+  ],
+  "realSongReplies": {
+    "voice": "Jessica Anne Bogart - Chatty and Friendly",
+    "model": "Eleven Multilingual v2",
+    "generated": "2026-11-03",
+    "keys": [
+      "candidate-0",
+      "preview-0",
+      "playing-0",
+      "candidate-1",
+      "preview-1",
+      "playing-1",
+      "candidate-2",
+      "preview-2",
+      "playing-2"
+    ],
+    "batchSource": "ElevenLabs_2026-11-04T04_52_49_Jessica Anne Bogart - Chatty and Friendly_pvc_s50_m2.mp3"
+  },
+  "artistAnnouncementUpdate": {
+    "voice": "Jessica Anne Bogart - Chatty and Friendly",
+    "source": "ElevenLabs_2026-11-04T05_11_01_Jessica Anne Bogart - Chatty and Friendly_pvc_s50_m2.mp3",
+    "files": [
+      "candidate-0",
+      "preview-0",
+      "playing-0",
+      "candidate-1",
+      "preview-1",
+      "playing-1",
+      "candidate-2",
+      "preview-2",
+      "playing-2"
+    ],
+    "note": "Song title and SE SO NEON spoken in every candidate, preview, and playing line."
+  }
 }
