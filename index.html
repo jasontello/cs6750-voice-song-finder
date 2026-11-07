@@ -99,8 +99,44 @@ function updateReply(text){
   const animation=panel.animate([{height:before+'px'},{height:after+'px'}],{duration:220,easing:'ease-out'});animation.id='panel-size';
  }
 }
-function render(announce=true){const previousSong=$('song').textContent,cardWasHidden=$('musiccard').hidden;$('assistant').hidden=state==='idle';$('musiccard').hidden=!['candidate','preview','playing','paused'].includes(state);document.querySelector('.phone').classList.toggle('active',state!=='idle'&&state!=='stopped');const s=screens[state],text=typeof s.text==='function'?s.text():s.text;updateReply(text);$('prompt').textContent=s.prompt;$('status').textContent=state==='idle'?'Ready for your request':state==='playing'?'Song selected':'Siri';$('choices').replaceChildren();s.choices.forEach(([label,event])=>{const b=document.createElement('button');b.textContent='“'+label+'”';b.disabled=demoRunning;b.onclick=()=>act(event,label);$('choices').append(b)});$('song').textContent=songs[index].name;$('albumart').src=`covers/song-${index}.jpg`;$('albumart').alt=index===0?'Summer Plumage album cover by SE SO NEON':'Nonadaptation album cover by SE SO NEON';$('art').style.background=songs[index].color;$('cover').textContent='SAMPLE COLLECTION / 0'+(index+1);if(!$('musiccard').hidden&&(cardWasHidden||previousSong!==songs[index].name))enterContent($('musiccard'));enterContent($('choices'));let speech=Promise.resolve();if(announce){logs.push({speaker:'Assistant',text,time:new Date().toISOString()});speech=speak()}history();return speech}
+function render(announce=true){const previousSong=$('song').textContent,cardWasHidden=$('musiccard').hidden;$('assistant').hidden=state==='idle';$('musiccard').hidden=!['candidate','preview','playing','paused'].includes(state);document.querySelector('.phone').classList.toggle('active',state!=='idle'&&state!=='stopped');const s=screens[state],text=typeof s.text==='function'?s.text():s.text;updateReply(text);$('prompt').textContent=s.prompt;$('status').textContent=state==='idle'?'Ready for your request':state==='playing'?'Song selected':'Siri';$('choices').replaceChildren();s.choices.forEach(([label,event])=>{const b=document.createElement('button');b.textContent='“'+label+'”';b.disabled=demoRunning;b.onclick=()=>manualChoice(event,label);$('choices').append(b)});$('song').textContent=songs[index].name;$('albumart').src=`covers/song-${index}.jpg`;$('albumart').alt=index===0?'Summer Plumage album cover by SE SO NEON':'Nonadaptation album cover by SE SO NEON';$('art').style.background=songs[index].color;$('cover').textContent='SAMPLE COLLECTION / 0'+(index+1);if(!$('musiccard').hidden&&(cardWasHidden||previousSong!==songs[index].name))enterContent($('musiccard'));enterContent($('choices'));let speech=Promise.resolve();if(announce){logs.push({speaker:'Assistant',text,time:new Date().toISOString()});speech=speak()}history();return speech}
 function history(){$('history').replaceChildren();logs.forEach(l=>{const li=document.createElement('li');li.textContent=l.speaker+': '+l.text;$('history').append(li)})}
+const choiceVoices = {
+  "Yesterday.": "user-yesterday",
+  "I don’t remember.": "user-unsure",
+  "Stop searching.": "user-stop",
+  "No, try another song.": "user-another",
+  "Yes, play this song.": "user-yes",
+  "Repeat that.": "user-repeat",
+  "Play that preview again.": "user-replay",
+  "Try the choices again.": "user-again",
+  "Actually, that’s the wrong song.": "user-actually-wrong",
+  "Pause the music.": "user-pause",
+  "Start a new search.": "user-restart",
+  "Resume the music.": "user-resume",
+  "That’s the wrong song.": "user-wrong",
+  "Try finding the song again.": "user-retry",
+  "Try today.": "user-try-today",
+  "Search all recent songs.": "user-recent",
+  "Hey Siri, play that Korean song I heard earlier.": "user-start",
+  "Today, this morning.": "user-today",
+  "Play a preview.": "user-preview",
+  "No, next song.": "user-next",
+  "That’s the one. Play it.": "user-select"
+};
+async function manualChoice(event,label){
+  stopAudio();
+  const run=audioRun;
+  if($('voice').checked){
+    $('assistant').hidden=false;
+    document.querySelector('.phone').classList.add('active');
+    $('status').textContent='Listening';
+    updateReply(label);
+    $('heard').textContent='';
+    await speak(choiceVoices[label]);
+  }
+  if(run===audioRun && !demoRunning) return act(event,label);
+}
 function act(event,label){stopAudio();$('audioerror').textContent='';logs.push({speaker:'You',text:label,time:new Date().toISOString()});$('heard').textContent='You: '+label;switch(event){case'start':state='when';break;case'today':case'unknown':index=0;state='candidate';break;case'yesterday':state='empty';break;case'next':case'nextpreview':case'wrong':index++;state=index>2?'none':event==='nextpreview'?'preview':'candidate';if(index>2)index=2;break;case'again':index=0;state='candidate';break;case'preview':state='preview';break;case'select':state='playing';break;case'pause':state='paused';break;case'stop':state='stopped';break;case'restart':index=0;state='when';break;case'repeat':break;}const run=audioRun;const nextState=state;const speech=render();if(state==='preview'||state==='playing'){speech.then(()=>{if(audioRun===run&&state===nextState)music(nextState==='preview'?5:20)})}if(!demoRunning)$('choices').firstElementChild?.focus({preventScroll:true});return speech}
 let demoRunning=false,demoRun=0;
 function cancelDemo(){demoRun++;demoRunning=false;$('demo').textContent='▶ Play demonstration';$('demostatus').textContent='Ready to play · About 35 seconds';document.querySelectorAll('#choices button').forEach(b=>b.disabled=false)}
